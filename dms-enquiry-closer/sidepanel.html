@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hero DMS Enquiry Closer</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <img src="icons/icon48.png" alt="" class="brand-icon" />
+        <div>
+          <h1>DMS Enquiry Closer</h1>
+          <p class="subtitle">Hero Connect Siebel Automation</p>
+        </div>
+      </div>
+      <button id="refreshStatusBtn" class="btn-icon" title="Re-check active DMS tab">&#x21bb;</button>
+    </header>
+
+    <div id="connectionBanner" class="banner banner-warn">
+      <span id="connectionDot" class="dot"></span>
+      <span id="connectionText">Checking active browser tab...</span>
+    </div>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>1. Enquiry List (CSV / Excel)</h2>
+        <button id="downloadSampleBtn" class="btn-link" type="button">Sample CSV</button>
+      </div>
+
+      <label id="dropZone" class="dropzone" for="fileInput">
+        <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" hidden />
+        <strong id="fileLabel">Drop CSV / Excel file or click to browse</strong>
+        <span id="fileMeta" class="muted">Requires an Enquiry# column; optional Reason / Remarks overrides</span>
+      </label>
+
+      <details id="mappingDetails" class="details-box" hidden>
+        <summary>Column Mapping</summary>
+        <div id="mappingGrid" class="mapping-grid"></div>
+      </details>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>2. Default Closing Values</h2>
+        <span class="muted small">Used unless row specifies override</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="defFollowupDone">Followup Done</label>
+          <div class="input-with-btn">
+            <input id="defFollowupDone" type="text" placeholder="e.g. CONNECTED" />
+            <button class="btn-scan" type="button" data-scan="followupDone" title="Scan options from open DMS Activity row">Scan</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="defEnquiryStatus">Enquiry Status</label>
+          <div class="input-with-btn">
+            <input id="defEnquiryStatus" type="text" placeholder="Closed" />
+            <button class="btn-scan" type="button" data-scan="enquiryStatus" title="Scan options from open DMS Activity row">Scan</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="defReason">Reason</label>
+          <div class="input-with-btn">
+            <input id="defReason" type="text" placeholder="Bought Competitor" />
+            <button class="btn-scan" type="button" data-scan="reason" title="Scan options from open DMS Activity row">Scan</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="defSubReason">Close Out Sub Reason</label>
+          <div class="input-with-btn">
+            <input id="defSubReason" type="text" placeholder="Honda Shine" />
+            <button class="btn-scan" type="button" data-scan="subReason" title="Scan options from open DMS Activity row">Scan</button>
+          </div>
+        </div>
+
+        <div class="field field-wide">
+          <label for="defNextFollowupDate">Next Follow-Up Date <span class="muted small">(required by DMS; use TODAY, +1d, or DD/MM/YYYY)</span></label>
+          <input id="defNextFollowupDate" type="text" placeholder="TODAY" />
+        </div>
+      </div>
+
+      <div id="scanResultsBox" class="scan-box" hidden>
+        <div class="scan-head">
+          <span id="scanTitle">Available Options</span>
+          <button id="closeScanBtn" class="btn-link" type="button">Dismiss</button>
+        </div>
+        <div id="scanChips" class="chip-list"></div>
+      </div>
+
+      <details class="details-box">
+        <summary>Optional Fields &amp; Timing</summary>
+        <div class="form-grid compact-top">
+          <div class="field">
+            <label for="defRemarks">Remarks</label>
+            <input id="defRemarks" type="text" placeholder="Optional remarks" />
+          </div>
+          <div class="field">
+            <label for="defSubReason2">Close Out Sub Reason2</label>
+            <input id="defSubReason2" type="text" placeholder="Optional" />
+          </div>
+          <div class="field">
+            <label for="defMakeBought">Make Bought</label>
+            <input id="defMakeBought" type="text" placeholder="If competitor bought" />
+          </div>
+          <div class="field">
+            <label for="defModel">Model</label>
+            <input id="defModel" type="text" placeholder="If competitor bought" />
+          </div>
+          <div class="field">
+            <label for="defFollowupAction">Follow-Up Action</label>
+            <input id="defFollowupAction" type="text" placeholder="Optional" />
+          </div>
+          <div class="field">
+            <label for="stepDelayMs">Step Delay (ms)</label>
+            <input id="stepDelayMs" type="number" min="0" max="5000" step="50" />
+          </div>
+        </div>
+      </details>
+
+      <details class="details-box">
+        <summary>Missing Enquiry Form Fallbacks (Optional)</summary>
+        <p class="muted small compact-top">Variant &amp; Color are skipped automatically (not required to close).</p>
+        <div class="form-grid compact-top">
+          <div class="field">
+            <label for="oppAge">Age (Years)</label>
+            <input id="oppAge" type="text" placeholder="e.g. 28" />
+          </div>
+          <div class="field">
+            <label for="oppGender">Gender</label>
+            <input id="oppGender" type="text" placeholder="e.g. M or Male" />
+          </div>
+          <div class="field">
+            <label for="oppOrderType">Booking Order Type</label>
+            <input id="oppOrderType" type="text" placeholder="Only if empty" />
+          </div>
+          <div class="field">
+            <label for="oppExistingVehicle">Existing Vehicle</label>
+            <input id="oppExistingVehicle" type="text" placeholder="Only if empty" />
+          </div>
+          <div class="field">
+            <label for="oppPointOfContact">Point of Contact</label>
+            <input id="oppPointOfContact" type="text" placeholder="Only if empty" />
+          </div>
+          <div class="field">
+            <label for="oppExpectedPurchaseDate">Expected Date Of Purchase</label>
+            <input id="oppExpectedPurchaseDate" type="text" placeholder="TODAY, +7d, or DD/MM/YYYY" />
+          </div>
+        </div>
+        <label class="checkbox-row compact-top">
+          <input id="autoPickEmptyOppCombos" type="checkbox" />
+          <span>Auto-pick 1st option for remaining required Enquiry dropdowns (excludes Variant/Color)</span>
+        </label>
+      </details>
+
+      <div class="toggles">
+        <label class="checkbox-row force-close-row">
+          <input id="forceClose" type="checkbox" checked />
+          <span><strong>Force Close Mode</strong> (Auto-repair missing Enquiry fields &amp; guarantee closure)</span>
+        </label>
+        <label class="checkbox-row">
+          <input id="skipIfClosed" type="checkbox" checked />
+          <span>Skip if Enquiry Status is already non-Open</span>
+        </label>
+        <label class="checkbox-row">
+          <input id="deduplicate" type="checkbox" checked />
+          <span>Deduplicate repeated Enquiry# rows</span>
+        </label>
+        <label class="checkbox-row dry-run-row">
+          <input id="dryRun" type="checkbox" checked />
+          <span><strong>Dry Run</strong> (verify Enquiry# &amp; status without saving)</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>3. AI Auto-Recovery (NVIDIA NIM)</h2>
+        <span id="aiModeBadge" class="ai-pill">Off</span>
+      </div>
+
+      <label class="checkbox-row ai-toggle-row">
+        <input id="aiEnabled" type="checkbox" />
+        <span>Auto-diagnose &amp; fix closing errors via NVIDIA NIM</span>
+      </label>
+
+      <label class="checkbox-row">
+        <input id="aiAutonomousFill" type="checkbox" checked />
+        <span>Autonomous AI Fill (let AI fill any missing/invalid DMS fields to close)</span>
+      </label>
+
+      <div class="form-grid">
+        <div class="field field-wide">
+          <label for="nimApiKey">NVIDIA NIM API Key <span class="muted small">(stored locally in browser)</span></label>
+          <div class="input-with-btn">
+            <input id="nimApiKey" type="password" placeholder="nvapi-..." autocomplete="off" />
+            <button id="toggleNimKeyBtn" class="btn-scan" type="button" title="Show/Hide API key">Show</button>
+          </div>
+        </div>
+
+        <div class="field field-wide">
+          <label for="nimModel">NIM Model</label>
+          <div class="input-with-btn">
+            <input id="nimModel" type="text" list="nimModelList" placeholder="nvidia/nemotron-3-nano-30b-a3b" />
+            <button id="fetchModelsBtn" class="btn-scan" type="button" title="Fetch active models from NVIDIA NIM">Fetch</button>
+          </div>
+          <datalist id="nimModelList">
+            <option value="nvidia/nemotron-3-nano-30b-a3b"></option>
+            <option value="qwen/qwen3-32b"></option>
+            <option value="nvidia/llama-3.3-nemotron-super-49b-v1"></option>
+            <option value="nvidia/nemotron-3.5-super-vl-120b-a12b"></option>
+          </datalist>
+        </div>
+      </div>
+
+      <div class="ai-test-row">
+        <button id="testNimBtn" class="btn btn-secondary btn-sm" type="button">Test AI Connection</button>
+        <span id="nimTestStatus" class="muted small"></span>
+      </div>
+
+      <details class="details-box">
+        <summary>AI Advanced Settings</summary>
+        <div class="form-grid compact-top">
+          <div class="field field-wide">
+            <label for="nimBaseUrl">API Base URL</label>
+            <input id="nimBaseUrl" type="text" placeholder="https://integrate.api.nvidia.com/v1" />
+          </div>
+          <div class="field">
+            <label for="aiMaxRetries">Max AI Retries / Enquiry</label>
+            <input id="aiMaxRetries" type="number" min="1" max="5" step="1" />
+          </div>
+          <div class="field field-wide">
+            <label for="aiDealerHint">Dealer Context Hint (Optional — used directly + by AI)</label>
+            <input id="aiDealerHint" type="text" placeholder="e.g. State: UP, District: Lucknow, Tehsil: Sadar, City: Lucknow, Pin: 226001, Age: 28" />
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="card">
+      <div class="controls">
+        <button id="startBtn" class="btn btn-primary" type="button" disabled>Start Dry Run</button>
+        <button id="pauseBtn" class="btn btn-secondary" type="button" disabled>Pause</button>
+        <button id="stopBtn" class="btn btn-danger" type="button" disabled>Stop</button>
+      </div>
+
+      <div id="validationAlert" class="inline-alert" hidden></div>
+
+      <div class="stats-bar">
+        <div class="stat"><span class="stat-val" id="statTotal">0</span><span class="stat-lbl">Total</span></div>
+        <div class="stat stat-ok"><span class="stat-val" id="statDone">0</span><span class="stat-lbl">Done</span></div>
+        <div class="stat stat-skip"><span class="stat-val" id="statSkipped">0</span><span class="stat-lbl">Skipped</span></div>
+        <div class="stat stat-err"><span class="stat-val" id="statFailed">0</span><span class="stat-lbl">Failed</span></div>
+      </div>
+
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Enquiry#</th>
+              <th>Status</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="queueBody">
+            <tr>
+              <td colspan="4" class="empty-cell">Upload a CSV or Excel file to begin.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer-actions">
+        <button id="retryFailedBtn" class="btn btn-secondary btn-sm" type="button" disabled>Retry Failed</button>
+        <button id="exportCsvBtn" class="btn btn-secondary btn-sm" type="button" disabled>Export CSV</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

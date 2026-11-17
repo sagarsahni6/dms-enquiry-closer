@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Hero DMS Enquiry Closer",
+  "version": "1.0.0",
+  "description": "Automates bulk enquiry closing in Hero MotoCorp eDealer DMS (Siebel Open UI) from CSV/Excel inside your logged-in browser session.",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://connect.heromotocorp.biz/*",
+    "https://integrate.api.nvidia.com/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://127.0.0.1/*",
+    "http://localhost/*"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Open Hero DMS Enquiry Closer",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://connect.heromotocorp.biz/*"],
+      "js": ["content/siebel_bridge.js"],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://connect.heromotocorp.biz/*"],
+      "js": ["content/content_runner.js"],
+      "world": "ISOLATED",
+      "run_at": "document_idle"
+    }
+  ]
+}

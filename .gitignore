@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Local Siebel captures and sensitive dealer session data
+Calls_ 2-1L7N0LXA.html
+Calls_ 2-1L7N0LXA_files/
+Recording 11_11_2026 at 12_39_47 PM.json
+
+# Playwright & test artifacts
+userDataDir*
+*.log
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db

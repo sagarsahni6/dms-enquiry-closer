@@ -1,0 +1,17 @@
+{
+  "name": "hero-dms-enquiry-closer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Manifest V3 Chrome/Edge extension and test suite for automating Hero MotoCorp eDealer DMS enquiry closing",
+  "type": "module",
+  "scripts": {
+    "vendor": "node scripts/vendor_libs.mjs",
+    "test:unit": "node --test tests/batch_parser.test.mjs tests/nim_client.test.mjs",
+    "test:e2e": "node tests/mock_siebel_harness.mjs",
+    "test": "npm run test:unit && npm run test:e2e"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.49.0",
+    "xlsx": "^0.18.5"
+  }
+}
